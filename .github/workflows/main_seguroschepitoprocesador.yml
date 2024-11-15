@@ -22,14 +22,20 @@ jobs:
           java-version: '21'
           distribution: 'microsoft'
 
-      - name: Build with Maven
-        run: mvn clean install
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
 
-      - name: Upload artifact for deployment job
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      - name: List JAR files in build/libs
+        run: ls build/libs
+
+      - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
           name: java-app
-          path: '${{ github.workspace }}/target/*.jar'
+          path: build/libs/seguroschepitoapiprocesador-0.0.1-SNAPSHOT.jar
 
   deploy:
     runs-on: windows-latest
@@ -45,13 +51,16 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: java-app
-      
+
+      - name: List files after downloading artifact
+        run: ls -R
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_6796BF14D562422E997D80666609BDAB }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_FB6BAB6E012B4CE5A9168B9794894E5E }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_66CCB8E0F8E344F8A22E2CA731AB31B0 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_351DBBBD153E46FF89558FD4AD1C07DC }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6518D2C912434A33B32814746F43CFC5 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_3017A6CE07F940D9AE1A5D877E7E61AD }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -59,5 +68,5 @@ jobs:
         with:
           app-name: 'seguroschepitoprocesador'
           slot-name: 'Production'
-          package: '*.jar'
+          package: 'seguroschepitoapiprocesador-0.0.1-SNAPSHOT.jar'  # Ruta actualizada a la raíz del directorio
           
