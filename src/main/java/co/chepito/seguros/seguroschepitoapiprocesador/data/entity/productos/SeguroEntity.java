@@ -28,6 +28,9 @@ public class SeguroEntity {
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
+    @Column(name = "campo", nullable = false )
+    private String campo;
+
     @Column(name = "responsable_legal", nullable = false)
     private String responsableLegal;
 

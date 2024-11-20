@@ -20,6 +20,7 @@ public class SeguroDomain {
 
     private UUID seguroId;
     private String nombre;
+    private String campo;
     private String responsableLegal;
     private String descripcion;
     private Date fechaInicio;
